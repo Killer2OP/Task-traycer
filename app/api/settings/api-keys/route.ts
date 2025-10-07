@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Return API keys without exposing the actual key values for security
-    const apiKeys = settings.apiKeys.map(key => ({
+    const apiKeys = settings.apiKeys.map((key: any) => ({
       id: key._id,
       provider: key.provider,
       model: key.model,
@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
 
     // Check if API key already exists for this provider/model combination
     const existingKey = settings.apiKeys.find(
-      apiKey => apiKey.provider === provider && apiKey.model === model
+      (apiKey: any) => apiKey.provider === provider && apiKey.model === model   
     )
 
     if (existingKey) {

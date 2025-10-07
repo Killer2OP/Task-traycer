@@ -7,10 +7,11 @@ import { createErrorResponse, createSuccessResponse } from '@/lib/api-utils'
 const MOCK_USER_ID = '507f1f77bcf86cd799439011'
 
 // PUT /api/settings/api-keys/[id] - Update API key
-export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const body = await request.json()
     const { isActive } = body
+    const { id } = await params
 
     await connectDB()
     
@@ -20,7 +21,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
       return createErrorResponse('Settings not found', 404)
     }
 
-    const apiKey = settings.apiKeys.id(params.id)
+    const apiKey = settings.apiKeys.id(id)
     
     if (!apiKey) {
       return createErrorResponse('API key not found', 404)
@@ -48,8 +49,9 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
 }
 
 // DELETE /api/settings/api-keys/[id] - Delete API key
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params
     await connectDB()
     
     const settings = await UserSettings.findOne({ userId: MOCK_USER_ID })
@@ -58,7 +60,7 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
       return createErrorResponse('Settings not found', 404)
     }
 
-    const apiKey = settings.apiKeys.id(params.id)
+    const apiKey = settings.apiKeys.id(id)
     
     if (!apiKey) {
       return createErrorResponse('API key not found', 404)

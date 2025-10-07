@@ -816,7 +816,7 @@ export default function DashboardContent() {
                     {analytics?.overview.inProgressTasks || 0}
                   </p>
                   <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-                    {analytics?.overview.totalTasks - analytics?.overview.completedTasks - analytics?.overview.inProgressTasks || 0} pending
+                    {(analytics?.overview.totalTasks || 0) - (analytics?.overview.completedTasks || 0) - (analytics?.overview.inProgressTasks || 0)} pending
                   </p>
                 </div>
                 <div className="p-2 lg:p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
@@ -833,7 +833,7 @@ export default function DashboardContent() {
                     {analytics?.agents.activeAgents || 0}
                   </p>
                   <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-                    {analytics?.agents.totalAgents - analytics?.agents.activeAgents || 0} idle
+                    {(analytics?.agents.totalAgents || 0) - (analytics?.agents.activeAgents || 0)} idle
                   </p>
                 </div>
                 <div className="p-2 lg:p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg">

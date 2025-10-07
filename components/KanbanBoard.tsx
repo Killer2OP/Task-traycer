@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { 
   Plus, 
   Edit, 
@@ -60,7 +60,7 @@ export default function KanbanBoard({ planId }: KanbanBoardProps) {
   const [newTask, setNewTask] = useState({
     title: '',
     description: '',
-    priority: 'medium' as const,
+    priority: 'medium' as 'low' | 'medium' | 'high' | 'urgent',
     dueDate: '',
     estimatedHours: '',
     tags: [] as string[]
@@ -73,13 +73,7 @@ export default function KanbanBoard({ planId }: KanbanBoardProps) {
     { id: 'completed', title: 'Completed', color: 'bg-green-100 dark:bg-green-900/20' }
   ]
 
-  useEffect(() => {
-    if (planId) {
-      fetchPlan()
-    }
-  }, [planId])
-
-  const fetchPlan = async () => {
+  const fetchPlan = useCallback(async () => {
     try {
       const response = await fetch(`/api/plans/${planId}`)
       if (response.ok) {
@@ -94,7 +88,13 @@ export default function KanbanBoard({ planId }: KanbanBoardProps) {
     } finally {
       setLoading(false)
     }
-  }
+  }, [planId])
+
+  useEffect(() => {
+    if (planId) {
+      fetchPlan()
+    }
+  }, [planId, fetchPlan])
 
   const updateTaskStatus = async (taskId: string, newStatus: Task['status']) => {
     try {
@@ -459,7 +459,7 @@ export default function KanbanBoard({ planId }: KanbanBoardProps) {
                   </label>
                   <select
                     value={newTask.priority}
-                    onChange={(e) => setNewTask({ ...newTask, priority: e.target.value as Task['priority'] })}
+                    onChange={(e) => setNewTask({ ...newTask, priority: e.target.value as 'low' | 'medium' | 'high' | 'urgent' })}
                     className="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-slate-700 dark:text-white transition-colors"
                   >
                     <option value="low">Low</option>

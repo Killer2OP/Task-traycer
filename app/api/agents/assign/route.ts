@@ -93,7 +93,7 @@ export async function POST(request: NextRequest) {
 
     if (action === 'unassign-task' && taskId) {
       // Remove task from agent's assigned tasks
-      agent.assignedTasks = agent.assignedTasks.filter(id => id.toString() !== taskId)
+      agent.assignedTasks = agent.assignedTasks.filter((id: any) => id.toString() !== taskId)
       await agent.save()
 
       // Remove assignee from task
@@ -123,7 +123,7 @@ export async function POST(request: NextRequest) {
 
     if (action === 'unassign-project' && projectId) {
       // Remove project from agent's assigned projects
-      agent.assignedProjects = agent.assignedProjects.filter(id => id.toString() !== projectId)
+      agent.assignedProjects = agent.assignedProjects.filter((id: any) => id.toString() !== projectId)
       await agent.save()
 
       return createSuccessResponse({ 

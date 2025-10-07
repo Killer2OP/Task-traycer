@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { 
   Plus, 
@@ -64,19 +64,13 @@ export default function PlanEditor() {
   const [newTask, setNewTask] = useState({
     title: '',
     description: '',
-    priority: 'medium' as const,
+    priority: 'medium' as 'low' | 'medium' | 'high' | 'urgent',
     dueDate: '',
     assigneeId: '',
     dependencies: [] as string[]
   })
 
-  useEffect(() => {
-    if (planId) {
-      fetchPlan()
-    }
-  }, [planId])
-
-  const fetchPlan = async () => {
+  const fetchPlan = useCallback(async () => {
     try {
       const response = await fetch(`/api/plans/${planId}`)
 
@@ -93,7 +87,13 @@ export default function PlanEditor() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [planId, router])
+
+  useEffect(() => {
+    if (planId) {
+      fetchPlan()
+    }
+  }, [planId, fetchPlan])
 
   const createTask = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -602,7 +602,7 @@ export default function PlanEditor() {
                   </label>
                   <select
                     value={newTask.priority}
-                    onChange={(e) => setNewTask({ ...newTask, priority: e.target.value as Task['priority'] })}
+                    onChange={(e) => setNewTask({ ...newTask, priority: e.target.value as 'low' | 'medium' | 'high' | 'urgent' })}
                     className="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-slate-700 dark:text-white transition-colors"
                   >
                     <option value="low">Low</option>

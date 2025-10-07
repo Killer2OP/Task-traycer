@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { 
   BarChart3, 
   TrendingUp, 
@@ -91,11 +91,7 @@ export default function AnalyticsDashboard() {
   const [loading, setLoading] = useState(true)
   const [timeframe, setTimeframe] = useState('30d')
 
-  useEffect(() => {
-    fetchAnalytics()
-  }, [timeframe])
-
-  const fetchAnalytics = async () => {
+  const fetchAnalytics = useCallback(async () => {
     try {
       const response = await fetch(`/api/analytics?timeframe=${timeframe}`)
       if (response.ok) {
@@ -107,7 +103,11 @@ export default function AnalyticsDashboard() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [timeframe])
+
+  useEffect(() => {
+    fetchAnalytics()
+  }, [fetchAnalytics])
 
   if (loading) {
     return (

@@ -87,7 +87,7 @@ export default function ProjectTemplates() {
     }
   }
 
-  const useTemplate = async (templateId: string) => {
+  const createProjectFromTemplate = async (templateId: string) => {
     try {
       const response = await fetch(`/api/templates/${templateId}/use`, {
         method: 'POST',
@@ -113,6 +113,10 @@ export default function ProjectTemplates() {
       console.error('Error using template:', error)
       toast.error('Failed to create project from template')
     }
+  }
+
+  const handleUseTemplate = (templateId: string) => {
+    createProjectFromTemplate(templateId)
   }
 
   const filteredTemplates = templates.filter(template => {
@@ -303,7 +307,7 @@ export default function ProjectTemplates() {
                   <Eye className="h-4 w-4" />
                 </button>
                 <button
-                  onClick={() => useTemplate(template._id)}
+                  onClick={() => handleUseTemplate(template._id)}
                   className="flex items-center space-x-1 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg transition-colors text-sm font-medium"
                 >
                   <span>Use</span>
@@ -410,7 +414,7 @@ export default function ProjectTemplates() {
               </button>
               <button
                 onClick={() => {
-                  useTemplate(selectedTemplate._id)
+                  handleUseTemplate(selectedTemplate._id)
                   setSelectedTemplate(null)
                 }}
                 className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium"

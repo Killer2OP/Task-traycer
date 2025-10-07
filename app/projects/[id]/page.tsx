@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Sidebar from '@/components/Sidebar'
 import { 
@@ -55,14 +55,7 @@ export default function ProjectPage() {
   const [newPlan, setNewPlan] = useState({ name: '', description: '' })
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
-  useEffect(() => {
-    if (projectId) {
-      fetchProject()
-      fetchPlans()
-    }
-  }, [projectId])
-
-  const fetchProject = async () => {
+  const fetchProject = useCallback(async () => {
     try {
       const response = await fetch(`/api/projects/${projectId}`)
 
@@ -77,9 +70,9 @@ export default function ProjectPage() {
       console.error('Error fetching project:', error)
       toast.error('Failed to fetch project')
     }
-  }
+  }, [projectId, router])
 
-  const fetchPlans = async () => {
+  const fetchPlans = useCallback(async () => {
     try {
       const response = await fetch(`/api/projects/${projectId}/plans`)
 
@@ -95,7 +88,14 @@ export default function ProjectPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [projectId])
+
+  useEffect(() => {
+    if (projectId) {
+      fetchProject()
+      fetchPlans()
+    }
+  }, [projectId, fetchProject, fetchPlans])
 
   const createPlan = async (e: React.FormEvent) => {
     e.preventDefault()
